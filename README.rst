@@ -19,10 +19,21 @@ Parse an arbitrary Database URL::
 
     DATABASES = {'default': dj_database_url.parse('postgres://...')}
 
+Provide database options::
+
+    DATABASES = {
+        'default': dj_database_url.config(options={
+            'OPERATIONS': {
+                'save': {'safe': True}
+            }
+        })
+    }
+
+
 Supported databases
 -------------------
 
-Support currently exists for PostgreSQL, PostGIS, MySQL and SQLite.
+Support currently exists for PostgreSQL, PostGIS, MySQL, SQLite and MongoDB.
 
 SQLite connects to file based databases. The same URL format is used, omitting
 the hostname, and using the "file" portion as the filename of the database.

@@ -16,6 +16,7 @@ urlparse.uses_netloc.append('postgis')
 urlparse.uses_netloc.append('mysql')
 urlparse.uses_netloc.append('mysql2')
 urlparse.uses_netloc.append('sqlite')
+urlparse.uses_netloc.append('mongodb')
 
 DEFAULT_ENV = 'DATABASE_URL'
 
@@ -25,11 +26,12 @@ SCHEMES = {
     'postgis': 'django.contrib.gis.db.backends.postgis',
     'mysql': 'django.db.backends.mysql',
     'mysql2': 'django.db.backends.mysql',
-    'sqlite': 'django.db.backends.sqlite3'
+    'sqlite': 'django.db.backends.sqlite3',
+    'mongodb': 'django_mongodb_engine'
 }
 
 
-def config(env=DEFAULT_ENV, default=None):
+def config(env=DEFAULT_ENV, default=None, options=None):
     """Returns configured DATABASE dictionary from DATABASE_URL."""
 
     config = {}
@@ -37,12 +39,12 @@ def config(env=DEFAULT_ENV, default=None):
     s = os.environ.get(env, default)
 
     if s:
-        config = parse(s)
+        config = parse(s, options=options)
 
     return config
 
 
-def parse(url):
+def parse(url, options=None):
     """Parses a database URL."""
 
     config = {}
@@ -64,5 +66,8 @@ def parse(url):
 
     if url.scheme in SCHEMES:
         config['ENGINE'] = SCHEMES[url.scheme]
+
+    if options is not None:
+        config['OPTIONS'] = options
 
     return config
